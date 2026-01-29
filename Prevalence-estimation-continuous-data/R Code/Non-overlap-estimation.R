@@ -59,7 +59,7 @@ data_sim_n = function(N, p, mean = 2, beta_1 = 1, alpha_0 = 10, beta_0 = 1) {
 ##################### Simple Expectation-Maximation Algorithm (Classical Approach) To Estimate Prevalence ##########################
 
 em_gam_al_n = function(data_x_n, mean = 2, beta_1 = 1,  alpha_0 = 10, beta_0 = 1, n_iter = 100, tol = 1e-6){
-  n = length(data_x)
+  n = length(data_x_n)
   
   #Setting initial guess for Prevalence
   p = sum(data_x_n > (max(data_x_n) / 3)) / length(data_x_n)
@@ -169,13 +169,13 @@ den_mix_n = function(data_x_n, p, mean = 2, beta_1 = 1, alpha_0 = 10, beta_0 = 1
 set.seed(123)
 
 # Simulated data
-data_x_n = data_sim(5000, mean = 2, p = 0.08) 
+data_x_n = data_sim_n(5000, mean = 2, p = 0.08) 
 
 # Fit the model
 fit_n = em_gam_al_n(data_x) 
 
 # Fit Bootstrap method
-x_boot_n = bootstrap_em_gam_n(data_x, 10000)
+x_boot_n = bootstrap_em_gam_n(data_x_n, 10000)
 
 cat("Prevalence:", mean(x_boot_n$pi), "\n")
 cat("Standard Error:", x_boot_n$se, "\n")
@@ -250,4 +250,5 @@ mdip_draw_n = rstan::extract(mdip_fit_n, pars = "p")
 
 # 95% highest posterior density bounds
 print(spin(mdip_draw_n[["p"]], lower = 0, upper = 1, conf = 0.95))
+
 
